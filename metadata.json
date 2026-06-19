@@ -1,0 +1,6 @@
+{
+  "name": "FixKer.pk",
+  "description": "Pakistan's Trusted Network of Verified Skilled Professionals. Find top electricians, plumbers, carpenters, solar installers, and AC technicians in Lahore, Karachi, Islamabad, and across Pakistan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
