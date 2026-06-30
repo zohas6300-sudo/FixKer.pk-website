@@ -6,13 +6,13 @@ import Services from './components/Services';
 import HowItWorks from './components/HowItWorks';
 import WhyChooseUs from './components/WhyChooseUs';
 import LeadForms from './components/LeadForms';
-import LeadTrackerAdmin from './components/LeadTrackerAdmin';
 import Cities from './components/Cities';
 import Reviews from './components/Reviews';
 import FAQSection from './components/FAQSection';
 import Footer from './components/Footer';
 import StickyActions from './components/StickyActions';
 import { ShieldCheck, Info, X, Star } from 'lucide-react';
+import { firebaseService } from './services/firebaseService';
 
 const LOCAL_STORAGE_REQ_KEY = 'fixker_requests';
 const LOCAL_STORAGE_PRO_KEY = 'fixker_pros';
@@ -95,8 +95,8 @@ const INITIAL_MOCK_PROS: ProfessionalRegistration[] = [
 export default function App() {
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [pros, setPros] = useState<ProfessionalRegistration[]>([]);
+  const [firebaseDbStatus, setFirebaseDbStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   
-  const [adminOpen, setAdminOpen] = useState(false);
   const [preSelectedService, setPreSelectedService] = useState('');
   
   // Modals for policy popups
@@ -106,24 +106,54 @@ export default function App() {
   const requestFormRef = useRef<HTMLDivElement>(null);
   const proFormRef = useRef<HTMLDivElement>(null);
 
-  // Initial State Hydration
+  // Load data from Firebase
   useEffect(() => {
-    const savedReqs = localStorage.getItem(LOCAL_STORAGE_REQ_KEY);
-    const savedPros = localStorage.getItem(LOCAL_STORAGE_PRO_KEY);
+    async function loadData() {
+      try {
+        setFirebaseDbStatus('connecting');
+        let fetchedReqs = await firebaseService.getRequests();
+        let fetchedPros = await firebaseService.getPros();
 
-    if (savedReqs) {
-      setRequests(JSON.parse(savedReqs));
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_REQ_KEY, JSON.stringify(INITIAL_MOCK_REQUESTS));
-      setRequests(INITIAL_MOCK_REQUESTS);
-    }
+        // Seed if first time loading empty database
+        if (fetchedReqs.length === 0) {
+          console.log('Seeding initial mock requests to Firebase...');
+          for (const item of INITIAL_MOCK_REQUESTS) {
+            await firebaseService.saveRequest(item);
+          }
+          fetchedReqs = await firebaseService.getRequests();
+        }
 
-    if (savedPros) {
-      setPros(JSON.parse(savedPros));
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_PRO_KEY, JSON.stringify(INITIAL_MOCK_PROS));
-      setPros(INITIAL_MOCK_PROS);
+        if (fetchedPros.length === 0) {
+          console.log('Seeding initial mock professionals to Firebase...');
+          for (const item of INITIAL_MOCK_PROS) {
+            await firebaseService.savePro(item);
+          }
+          fetchedPros = await firebaseService.getPros();
+        }
+
+        setRequests(fetchedReqs);
+        setPros(fetchedPros);
+        setFirebaseDbStatus('connected');
+      } catch (error) {
+        console.error('Firebase connection error, falling back to local storage:', error);
+        setFirebaseDbStatus('error');
+        
+        // Fallback to localStorage
+        const savedReqs = localStorage.getItem(LOCAL_STORAGE_REQ_KEY);
+        const savedPros = localStorage.getItem(LOCAL_STORAGE_PRO_KEY);
+        if (savedReqs) {
+          setRequests(JSON.parse(savedReqs));
+        } else {
+          setRequests(INITIAL_MOCK_REQUESTS);
+        }
+        if (savedPros) {
+          setPros(JSON.parse(savedPros));
+        } else {
+          setPros(INITIAL_MOCK_PROS);
+        }
+      }
     }
+    loadData();
   }, []);
 
   const persistRequests = (updated: ServiceRequest[]) => {
@@ -165,50 +195,109 @@ export default function App() {
   };
 
   // Inbound Handlers
-  const handleAddRequest = (requestData: Omit<ServiceRequest, 'id' | 'status' | 'createdAt'>) => {
+  const handleAddRequest = async (requestData: Omit<ServiceRequest, 'id' | 'status' | 'createdAt'>) => {
     const freshJob: ServiceRequest = {
       ...requestData,
       id: 'req-' + Date.now(),
       status: 'Pending',
       createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
     };
-    persistRequests([freshJob, ...requests]);
+    
+    // Update local state immediately
+    const updated = [freshJob, ...requests];
+    persistRequests(updated);
+
+    // Persist to Firebase
+    try {
+      await firebaseService.saveRequest(freshJob);
+    } catch (e) {
+      console.error('Failed to sync added request to Firebase:', e);
+    }
   };
 
-  const handleAddPro = (proData: Omit<ProfessionalRegistration, 'id' | 'status' | 'createdAt'>) => {
+  const handleAddPro = async (proData: Omit<ProfessionalRegistration, 'id' | 'status' | 'createdAt'>) => {
     const freshPro: ProfessionalRegistration = {
       ...proData,
       id: 'pro-' + Date.now(),
       status: 'Pending',
       createdAt: new Date().toISOString().substring(0, 10),
     };
-    persistPros([freshPro, ...pros]);
+
+    // Update local state immediately
+    const updated = [freshPro, ...pros];
+    persistPros(updated);
+
+    // Persist to Firebase
+    try {
+      await firebaseService.savePro(freshPro);
+    } catch (e) {
+      console.error('Failed to sync added professional to Firebase:', e);
+    }
   };
 
   // admin updates
-  const handleUpdateRequestStatus = (id: string, status: ServiceRequest['status']) => {
+  const handleUpdateRequestStatus = async (id: string, status: ServiceRequest['status']) => {
     const updated = requests.map((r) => (r.id === id ? { ...r, status } : r));
     persistRequests(updated);
+
+    try {
+      await firebaseService.updateRequestStatus(id, status);
+    } catch (e) {
+      console.error('Failed to sync status update to Firebase:', e);
+    }
   };
 
-  const handleUpdateProStatus = (id: string, status: ProfessionalRegistration['status']) => {
+  const handleUpdateProStatus = async (id: string, status: ProfessionalRegistration['status']) => {
     const updated = pros.map((p) => (p.id === id ? { ...p, status } : p));
     persistPros(updated);
+
+    try {
+      await firebaseService.updateProStatus(id, status);
+    } catch (e) {
+      console.error('Failed to sync status update to Firebase:', e);
+    }
   };
 
-  const handleDeleteRequest = (id: string) => {
+  const handleDeleteRequest = async (id: string) => {
     const filtered = requests.filter((r) => r.id !== id);
     persistRequests(filtered);
+
+    try {
+      await firebaseService.deleteRequest(id);
+    } catch (e) {
+      console.error('Failed to sync deletion to Firebase:', e);
+    }
   };
 
-  const handleDeletePro = (id: string) => {
+  const handleDeletePro = async (id: string) => {
     const filtered = pros.filter((p) => p.id !== id);
     persistPros(filtered);
+
+    try {
+      await firebaseService.deletePro(id);
+    } catch (e) {
+      console.error('Failed to sync deletion to Firebase:', e);
+    }
   };
 
-  const handleSeedMockData = () => {
-    persistRequests([...INITIAL_MOCK_REQUESTS, ...requests]);
-    persistPros([...INITIAL_MOCK_PROS, ...pros]);
+  const handleSeedMockData = async () => {
+    // Seed locally
+    const seededReqs = [...INITIAL_MOCK_REQUESTS, ...requests];
+    const seededPros = [...INITIAL_MOCK_PROS, ...pros];
+    persistRequests(seededReqs);
+    persistPros(seededPros);
+
+    // Seed on Firebase
+    try {
+      for (const item of INITIAL_MOCK_REQUESTS) {
+        await firebaseService.saveRequest(item);
+      }
+      for (const item of INITIAL_MOCK_PROS) {
+        await firebaseService.savePro(item);
+      }
+    } catch (e) {
+      console.error('Failed to seed mock data to Firebase:', e);
+    }
   };
 
   return (
@@ -228,8 +317,6 @@ export default function App() {
       {/* Primary Header */}
       <Header
         onScrollToSection={handleScrollToSection}
-        onOpenAdmin={() => setAdminOpen(true)}
-        activeRequestsCount={requests.filter((r) => r.status === 'Pending').length}
       />
 
       {/* Main Marketing Sections */}
@@ -337,19 +424,6 @@ export default function App() {
 
       {/* Persistent floating click helpers */}
       <StickyActions />
-
-      {/* ADMIN CRM SIDE OVERLAY */}
-      <LeadTrackerAdmin
-        requests={requests}
-        registrations={pros}
-        isOpen={adminOpen}
-        onClose={() => setAdminOpen(false)}
-        onUpdateRequestStatus={handleUpdateRequestStatus}
-        onUpdateProStatus={handleUpdateProStatus}
-        onDeleteRequest={handleDeleteRequest}
-        onDeletePro={handleDeletePro}
-        onSeedMockData={handleSeedMockData}
-      />
 
       {/* LEGAL DOCUMENT MODALS (Interactive Popups for high conversion trust) */}
       {activeModal && (

@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { Menu, X, Phone, ShieldCheck, Database } from 'lucide-react';
+import { Menu, X, Phone, ShieldCheck } from 'lucide-react';
 import Logo from './Logo';
 
 interface HeaderProps {
   onScrollToSection: (sectionId: string) => void;
-  onOpenAdmin: () => void;
-  activeRequestsCount: number;
 }
 
-export default function Header({ onScrollToSection, onOpenAdmin, activeRequestsCount }: HeaderProps) {
+export default function Header({ onScrollToSection }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavClick = (sectionId: string) => {
@@ -76,21 +74,6 @@ export default function Header({ onScrollToSection, onOpenAdmin, activeRequestsC
               </div>
             </div>
 
-            {/* Admin Console Quick Launch Indicator */}
-            <button
-              onClick={onOpenAdmin}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-primary text-xs font-semibold border border-slate-200 transition-all cursor-pointer relative"
-              title="View saved CRM and incoming leads"
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>CRM/Leads</span>
-              {activeRequestsCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-white whitespace-nowrap animate-pulse">
-                  {activeRequestsCount}
-                </span>
-              )}
-            </button>
-
             <button
               onClick={() => handleNavClick('register-pro')}
               className="px-5 py-2.5 text-xs sm:text-sm font-black text-slate-900 bg-amber-400 hover:bg-amber-500 hover:shadow-amber-200/50 active:scale-95 rounded-xl shadow-lg shadow-amber-100/85 transition-all cursor-pointer flex items-center space-x-1.5 border border-amber-300/40 relative group overflow-hidden"
@@ -112,20 +95,6 @@ export default function Header({ onScrollToSection, onOpenAdmin, activeRequestsC
 
           {/* Mobile Rightside controls */}
           <div className="flex lg:hidden items-center space-x-3">
-            {/* Lead board button */}
-            <button
-              onClick={onOpenAdmin}
-              className="p-2 rounded-lg bg-slate-50 text-slate-700 border border-slate-100 relative cursor-pointer"
-              title="CRM Dashboard"
-            >
-              <Database className="w-4 h-4" />
-              {activeRequestsCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white">
-                  {activeRequestsCount}
-                </span>
-              )}
-            </button>
-
             <a
               href="tel:03006347836"
               className="p-2 rounded-xl bg-accent text-white shadow-xs"
@@ -209,15 +178,6 @@ export default function Header({ onScrollToSection, onOpenAdmin, activeRequestsC
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Join as Verified Partner Pro</span>
-              </button>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAdmin();
-                }}
-                className="w-full py-2 px-4 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-semibold font-sans text-xs text-center"
-              >
-                Open CRM Dashboard
               </button>
             </div>
           </div>

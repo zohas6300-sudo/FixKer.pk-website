@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FixKer</string>
+    <string name="title_activity_main">FixKer</string>
+    <string name="package_name">com.fixker.pk</string>
+    <string name="custom_url_scheme">com.fixker.pk</string>
+</resources>

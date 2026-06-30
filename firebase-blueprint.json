@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "ServiceRequest": {
+      "title": "ServiceRequest",
+      "description": "A service request submitted by a customer.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "mobileNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "area": {
+          "type": "string"
+        },
+        "serviceType": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Contacted", "Assigned", "Completed"]
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "fullName", "mobileNumber", "city", "area", "serviceType", "description", "status", "createdAt"]
+    },
+    "ProfessionalRegistration": {
+      "title": "ProfessionalRegistration",
+      "description": "A professional partner registration form.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "whatsAppNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "profession": {
+          "type": "string"
+        },
+        "experience": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Approved", "Rejected"]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "cnicNumber": {
+          "type": "string"
+        },
+        "cnicFrontImage": {
+          "type": "string"
+        },
+        "cnicBackImage": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "fullName", "phoneNumber", "whatsAppNumber", "city", "profession", "experience", "status", "createdAt", "cnicNumber"]
+    }
+  },
+  "firestore": {
+    "/service_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/ServiceRequest" },
+      "description": "Collection of customer service requests."
+    },
+    "/pros/{proId}": {
+      "schema": { "$ref": "#/entities/ProfessionalRegistration" },
+      "description": "Collection of professional partner registrations."
+    }
+  }
+}

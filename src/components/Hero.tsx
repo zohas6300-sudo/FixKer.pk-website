@@ -1,6 +1,5 @@
 import { ArrowRight, MessageCircle, Shield, Users, Zap, Award } from 'lucide-react';
-
-const heroImage = "/src/assets/images/fixker_hero_1781862018297.jpg";
+import heroImage from '../assets/images/fixker_hero_1781862018297.jpg';
 
 interface HeroProps {
   onScrollToSection: (sectionId: string) => void;
