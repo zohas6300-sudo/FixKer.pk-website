@@ -99,10 +99,10 @@ export default function WhyChooseUs() {
               </p>
             </div>
             <a
-              href="tel:03006347836"
+              href="tel:+923116347837"
               className="inline-flex items-center px-6 py-4 bg-white text-primary hover:bg-slate-50 font-extrabold rounded-xl text-sm transition-all shadow-md"
             >
-              Call Helpline: 0300 6347836
+              Call Helpline: 0311 6347837
             </a>
           </div>
         </div>

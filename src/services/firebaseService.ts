@@ -5,11 +5,57 @@ import {
   setDoc, 
   updateDoc, 
   deleteDoc, 
-  orderBy, 
   query 
 } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { ServiceRequest, ProfessionalRegistration } from '../types';
+
+export enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null): never {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid || null,
+      email: auth.currentUser?.email || null,
+      emailVerified: auth.currentUser?.emailVerified || null,
+      isAnonymous: auth.currentUser?.isAnonymous || null,
+      tenantId: auth.currentUser?.tenantId || null,
+      providerInfo: auth.currentUser?.providerData?.map(provider => ({
+        providerId: provider.providerId,
+        email: provider.email,
+      })) || []
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 const REQUESTS_COLL = 'service_requests';
 const PROS_COLL = 'pros';
@@ -27,8 +73,7 @@ export const firebaseService = {
       // Sort by createdAt descending
       return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     } catch (e) {
-      console.error('Error fetching service requests:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.GET, REQUESTS_COLL);
     }
   },
 
@@ -37,8 +82,7 @@ export const firebaseService = {
     try {
       await setDoc(doc(db, REQUESTS_COLL, request.id), request);
     } catch (e) {
-      console.error('Error saving request:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.WRITE, `${REQUESTS_COLL}/${request.id}`);
     }
   },
 
@@ -48,8 +92,7 @@ export const firebaseService = {
       const ref = doc(db, REQUESTS_COLL, id);
       await updateDoc(ref, { status });
     } catch (e) {
-      console.error('Error updating request status:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.WRITE, `${REQUESTS_COLL}/${id}`);
     }
   },
 
@@ -58,8 +101,7 @@ export const firebaseService = {
     try {
       await deleteDoc(doc(db, REQUESTS_COLL, id));
     } catch (e) {
-      console.error('Error deleting request:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.DELETE, `${REQUESTS_COLL}/${id}`);
     }
   },
 
@@ -75,8 +117,7 @@ export const firebaseService = {
       // Sort by createdAt descending
       return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     } catch (e) {
-      console.error('Error fetching professionals:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.GET, PROS_COLL);
     }
   },
 
@@ -85,8 +126,7 @@ export const firebaseService = {
     try {
       await setDoc(doc(db, PROS_COLL, pro.id), pro);
     } catch (e) {
-      console.error('Error saving professional:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.WRITE, `${PROS_COLL}/${pro.id}`);
     }
   },
 
@@ -96,8 +136,7 @@ export const firebaseService = {
       const ref = doc(db, PROS_COLL, id);
       await updateDoc(ref, { status });
     } catch (e) {
-      console.error('Error updating professional status:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.WRITE, `${PROS_COLL}/${id}`);
     }
   },
 
@@ -106,8 +145,7 @@ export const firebaseService = {
     try {
       await deleteDoc(doc(db, PROS_COLL, id));
     } catch (e) {
-      console.error('Error deleting pro:', e);
-      throw e;
+      handleFirestoreError(e, OperationType.DELETE, `${PROS_COLL}/${id}`);
     }
   }
 };

@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import StickyActions from './components/StickyActions';
 import { ShieldCheck, Info, X, Star } from 'lucide-react';
 import { firebaseService } from './services/firebaseService';
+import CoordinatorDashboard from './components/CoordinatorDashboard';
 
 const LOCAL_STORAGE_REQ_KEY = 'fixker_requests';
 const LOCAL_STORAGE_PRO_KEY = 'fixker_pros';
@@ -96,6 +97,7 @@ export default function App() {
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [pros, setPros] = useState<ProfessionalRegistration[]>([]);
   const [firebaseDbStatus, setFirebaseDbStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
+  const [showCoordinatorPanel, setShowCoordinatorPanel] = useState(false);
   
   const [preSelectedService, setPreSelectedService] = useState('');
   
@@ -309,14 +311,17 @@ export default function App() {
           <span className="bg-emerald-500 text-slate-900 text-[9px] font-black tracking-widest uppercase px-1.5 py-0.5 rounded mr-1">
             Helpline
           </span>
-          <span>Need emergency help? Call or WhatsApp verified repairers safely at</span>
-          <a href="tel:03006347836" className="text-emerald-400 hover:underline font-extrabold">0300 6347836</a>
+          <span>Need emergency help? Contact our helpline via</span>
+          <a href="https://wa.me/923006347836" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline font-extrabold mx-1">WhatsApp (+92 300 6347836)</a>
+          <span>or</span>
+          <a href="tel:+923116347837" className="text-emerald-400 hover:underline font-extrabold ml-1">Call (0311 6347837)</a>
         </div>
       </div>
 
       {/* Primary Header */}
       <Header
         onScrollToSection={handleScrollToSection}
+        onOpenCoordinatorPanel={() => setShowCoordinatorPanel(true)}
       />
 
       {/* Main Marketing Sections */}
@@ -425,6 +430,18 @@ export default function App() {
       {/* Persistent floating click helpers */}
       <StickyActions />
 
+      {/* COORDINATOR / ID CARD VERIFICATION DATABASE PANEL */}
+      {showCoordinatorPanel && (
+        <CoordinatorDashboard
+          pros={pros}
+          onUpdateProStatus={handleUpdateProStatus}
+          onDeletePro={handleDeletePro}
+          onSeedMockData={handleSeedMockData}
+          firebaseDbStatus={firebaseDbStatus}
+          onClose={() => setShowCoordinatorPanel(false)}
+        />
+      )}
+
       {/* LEGAL DOCUMENT MODALS (Interactive Popups for high conversion trust) */}
       {activeModal && (
         <div className="fixed inset-0 z-55 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in">
@@ -480,6 +497,8 @@ export default function App() {
           </div>
         </div>
       )}
+
+
 
     </div>
   );

@@ -4,9 +4,10 @@ import Logo from './Logo';
 
 interface HeaderProps {
   onScrollToSection: (sectionId: string) => void;
+  onOpenCoordinatorPanel: () => void;
 }
 
-export default function Header({ onScrollToSection }: HeaderProps) {
+export default function Header({ onScrollToSection, onOpenCoordinatorPanel }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavClick = (sectionId: string) => {
@@ -17,7 +18,7 @@ export default function Header({ onScrollToSection }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs glass-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <div className="cursor-pointer" onClick={() => handleNavClick('hero')}>
             <Logo variant="light" />
@@ -63,10 +64,10 @@ export default function Header({ onScrollToSection }: HeaderProps) {
               <div>
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Helpline</p>
                 <a
-                  href="tel:03006347836"
+                  href="tel:+923116347837"
                   className="font-black text-slate-900 hover:text-primary text-base transition-colors"
                 >
-                  0300-6347836
+                  0311-6347837
                 </a>
               </div>
               <div className="p-2.5 rounded-xl bg-emerald-50 text-accent">
@@ -86,6 +87,15 @@ export default function Header({ onScrollToSection }: HeaderProps) {
             </button>
 
             <button
+              onClick={onOpenCoordinatorPanel}
+              className="px-4 py-2.5 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 active:scale-95 rounded-xl border border-emerald-200 flex items-center space-x-1.5 transition-all cursor-pointer"
+              title="Audit Professionals ID Database"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>ID Database Desk</span>
+            </button>
+
+            <button
               onClick={() => handleNavClick('request-job')}
               className="px-5 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primary-hover active:scale-95 rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all cursor-pointer"
             >
@@ -96,7 +106,7 @@ export default function Header({ onScrollToSection }: HeaderProps) {
           {/* Mobile Rightside controls */}
           <div className="flex lg:hidden items-center space-x-3">
             <a
-              href="tel:03006347836"
+              href="tel:+923116347837"
               className="p-2 rounded-xl bg-accent text-white shadow-xs"
               title="Call Helpline"
             >
@@ -150,18 +160,18 @@ export default function Header({ onScrollToSection }: HeaderProps) {
             </button>
 
             <div className="border-t border-slate-100 pt-4 px-4 flex flex-col space-y-3">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-sm px-1">
                 <span className="text-slate-500 font-medium">Verified Status:</span>
                 <span className="flex items-center text-accent font-bold">
                   <ShieldCheck className="w-4 h-4 mr-1" /> Active Network
                 </span>
               </div>
               <a
-                href="tel:03006347836"
+                href="tel:+923116347837"
                 className="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-emerald-50 text-accent font-bold text-center"
               >
                 <Phone className="w-4 h-4" />
-                <span>Call 0300 6347836</span>
+                <span>Call 0311 6347837</span>
               </a>
               <button
                 onClick={() => handleNavClick('request-job')}
@@ -178,6 +188,17 @@ export default function Header({ onScrollToSection }: HeaderProps) {
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Join as Verified Partner Pro</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCoordinatorPanel();
+                }}
+                className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold font-sans text-center shadow-md flex items-center justify-center space-x-2 border border-emerald-500/20"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>ID Card Database Desk</span>
               </button>
             </div>
           </div>

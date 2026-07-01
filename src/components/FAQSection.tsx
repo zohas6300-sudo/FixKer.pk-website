@@ -69,10 +69,10 @@ export default function FAQSection() {
             Speak directly with our regional lead generator coordinators for customized queries.
           </p>
           <a
-            href="tel:03006347836"
+            href="tel:+923116347837"
             className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-black transition-all shadow-xs"
           >
-            Call Helpline: 0300 6347836
+            Call Helpline: 0311 6347837
           </a>
         </div>
 

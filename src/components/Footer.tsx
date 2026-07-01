@@ -1,4 +1,4 @@
-import { ShieldCheck, MessageCircle, Phone, Globe } from 'lucide-react';
+import { ShieldCheck, MessageCircle, Phone, Globe, Facebook } from 'lucide-react';
 import Logo from './Logo';
 
 interface FooterProps {
@@ -83,7 +83,7 @@ export default function Footer({ onScrollToSection, onOpenPrivacyModal, onOpenTe
 
           {/* Col 3: Legal & Safety */}
           <div className="lg:col-span-2 space-y-4">
-            <h4 className="text-sm font-black uppercase tracking-wider text-white">Legal Panels</h4>
+            <h4 className="text-sm font-black uppercase tracking-wider text-white">Legal & Admin</h4>
             <ul className="space-y-2.5 text-sm font-bold">
               <li>
                 <button onClick={onOpenPrivacyModal} className="hover:text-accent cursor-pointer block text-left transition-colors">
@@ -114,17 +114,6 @@ export default function Footer({ onScrollToSection, onOpenPrivacyModal, onOpenTe
             </p>
             <div className="space-y-2.5 pt-1">
               <a
-                href="tel:03006347836"
-                className="flex items-center space-x-2.5 text-sm font-bold text-white hover:text-emerald-400 transition-colors"
-                title="Call phone helpline"
-              >
-                <div className="p-2 h-8 w-8 rounded bg-slate-800 text-emerald-500 flex items-center justify-center">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <span>0300 6347836</span>
-              </a>
-
-              <a
                 href="https://wa.me/923006347836"
                 target="_blank"
                 rel="noreferrer"
@@ -134,16 +123,34 @@ export default function Footer({ onScrollToSection, onOpenPrivacyModal, onOpenTe
                 <div className="p-2 h-8 w-8 rounded bg-slate-800 text-emerald-500 flex items-center justify-center">
                   <MessageCircle className="w-4 h-4 fill-emerald-500 text-slate-800" />
                 </div>
-                <span>WhatsApp Helpline</span>
+                <span>WhatsApp: +92 300 6347836</span>
+              </a>
+
+              <a
+                href="tel:+923116347837"
+                className="flex items-center space-x-2.5 text-sm font-bold text-white hover:text-emerald-400 transition-colors"
+                title="Call phone helpline"
+              >
+                <div className="p-2 h-8 w-8 rounded bg-slate-800 text-emerald-500 flex items-center justify-center">
+                  <Phone className="w-4 h-4" />
+                </div>
+                <span>Call Helpline: 0311 6347837</span>
               </a>
             </div>
 
             {/* Social channels */}
             <div className="flex items-center space-x-3 pt-3">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="p-2 rounded bg-slate-900 text-slate-400 hover:text-accent hover:bg-slate-800 transition-colors">
-                Facebook
+              <a
+                href="https://www.facebook.com/profile.php?id=61591479454227"
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 px-3 rounded bg-slate-900 text-slate-400 hover:text-accent hover:bg-slate-800 transition-colors flex items-center space-x-1.5 text-xs font-bold"
+                title="Follow FixKer on Facebook"
+              >
+                <Facebook className="w-3.5 h-3.5" />
+                <span>Facebook</span>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 rounded bg-slate-900 text-slate-400 hover:text-accent hover:bg-slate-800 transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 px-3 rounded bg-slate-900 text-slate-400 hover:text-accent hover:bg-slate-800 transition-colors text-xs font-bold">
                 Instagram
               </a>
             </div>

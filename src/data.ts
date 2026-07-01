@@ -1,4 +1,5 @@
 import { ProfessionalProfile, Testimonial, FAQ, CityInfo } from './types';
+import kashifImg from './assets/images/pakistani_technician_1782917587775.jpg';
 
 export const CITIES_SERVED: CityInfo[] = [
   { name: 'Lahore', urduName: 'لاہور', professionalCount: 340 },
@@ -32,7 +33,7 @@ export const FEATURED_PROFESSIONALS: ProfessionalProfile[] = [
     experience: 9,
     rating: 4.9,
     city: 'Lahore',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1624224971170-2f84fed5eb5e?auto=format&fit=crop&w=400&q=80',
     completedJobs: 247,
   },
   {
@@ -42,7 +43,7 @@ export const FEATURED_PROFESSIONALS: ProfessionalProfile[] = [
     experience: 8,
     rating: 4.9,
     city: 'Karachi',
-    imageUrl: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1624561172888-ac93c696e10c?auto=format&fit=crop&w=400&q=80',
     completedJobs: 215,
   },
   {
@@ -52,7 +53,7 @@ export const FEATURED_PROFESSIONALS: ProfessionalProfile[] = [
     experience: 8,
     rating: 4.9,
     city: 'Islamabad',
-    imageUrl: 'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&w=400&q=80',
     completedJobs: 312,
   },
   {
@@ -62,7 +63,7 @@ export const FEATURED_PROFESSIONALS: ProfessionalProfile[] = [
     experience: 7,
     rating: 4.8,
     city: 'Rawalpindi',
-    imageUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1619194617062-5a61b9c6a049?auto=format&fit=crop&w=400&q=80',
     completedJobs: 142,
   },
   {
@@ -72,7 +73,7 @@ export const FEATURED_PROFESSIONALS: ProfessionalProfile[] = [
     experience: 11,
     rating: 4.7,
     city: 'Multan',
-    imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+    imageUrl: kashifImg,
     completedJobs: 415,
   },
 ];
